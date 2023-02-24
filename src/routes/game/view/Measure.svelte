@@ -5,10 +5,11 @@
 	import VerticalLine from './VerticalLine.svelte';
 
 	export let measure: Measure;
+	console.log(measure.notes);
 </script>
 
 {#each measure.notes as note, i}
-	<NoteComponent id={0} y={note.position} />
+	<NoteComponent id={note.symbolId} y={note.position} />
 {/each}
 
 <VerticalLine />

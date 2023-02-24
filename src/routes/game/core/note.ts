@@ -115,21 +115,33 @@ export function findDurationIndex(value: number): number | undefined {
 	return DURATIONS.findIndex((duration) => duration === value);
 }
 
-export function createMeasures(notes: Note[], maxDuration: number): Measure[] {
+export function createMeasures(count: number, maxDuration: number): Measure[] {
 	const measures: Measure[] = [];
-	let currentMeasure = new Measure(maxDuration);
-	for (let i = 0; i < notes.length; i++) {
-		const note = notes[i];
-		if (currentMeasure.totalDuration + note.duration <= maxDuration) {
-			currentMeasure.add(note);
-		} else {
-			measures.push(currentMeasure);
-			currentMeasure = new Measure(maxDuration);
-			currentMeasure.add(note);
-		}
-	}
-	if (currentMeasure.notes.length > 0) {
+	for (let i = 0; i < count; i++) {
+		let durations = generateDurations();
+		let currentMeasure = new Measure(maxDuration);
+		durations.forEach((v) => {
+			currentMeasure.add(new Note(v, 64));
+		});
 		measures.push(currentMeasure);
 	}
 	return measures;
+}
+
+export function generateDurations(): number[] {
+	const durations = [1, 0.5, 0.25];
+	const notes: number[] = [];
+	let sum = 0;
+
+	while (sum < 1) {
+		const randomDuration = durations[Math.floor(Math.random() * durations.length)];
+		const remainingSpace = 1 - sum;
+
+		if (randomDuration <= remainingSpace) {
+			notes.push(randomDuration);
+			sum += randomDuration;
+		}
+	}
+
+	return notes;
 }

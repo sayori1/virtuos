@@ -3,12 +3,19 @@
 	import { onMount } from 'svelte';
 	import { requestAccess, setMidiHandler, midi } from '../core/midi';
 	import Score from '../view/Score.svelte';
-	import { findDurationIndex, Note } from '../core/note';
+	import {
+		createMeasures,
+		findDurationIndex,
+		generateDurations,
+		Measure,
+		Note
+	} from '../core/note';
 	import { DURATIONS, MAJOR } from '../core/const';
 	import NoteComponent from '../view/Note.svelte';
 	import { NoteSequence } from '../core/sequence';
 	import { randomInRange } from '../core/utils';
 	import Metronom from '../view/Metronom.svelte';
+	import MeasureComponent from '../view/Measure.svelte';
 
 	let notes: Note[] = Array.from({ length: 10 }).map((i) => {
 		return new Note(
@@ -16,6 +23,8 @@
 			60 + MAJOR[randomInRange(0, MAJOR.length)]
 		);
 	});
+
+	let measures = createMeasures(3, 1);
 
 	onMount(async () => {
 		refresh();
@@ -31,7 +40,6 @@
 		notes = notes;
 		duration = 0;
 		active = 0;
-		console.log('refresh!');
 	}
 
 	let duration = 0;
@@ -48,6 +56,8 @@
 		refresh();
 		return 0;
 	}
+
+	console.log(measures);
 </script>
 
 <div style="display:flex;flex-direction:row; justify-content:center">
@@ -58,8 +68,8 @@
 		backgroundColor={0xffffff}
 	>
 		<Score noteSpacing={50}>
-			{#each notes as note, i}
-				<NoteComponent bind:id={note.symbolId} y={2} isActive={active == i} />
+			{#each measures as measure, i}
+				<MeasureComponent {measure} />
 			{/each}
 		</Score>
 	</Application>
