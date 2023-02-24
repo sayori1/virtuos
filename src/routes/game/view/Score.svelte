@@ -11,6 +11,7 @@
 	export let noteLine = 25;
 
 	let height = lineSpacing * 5;
+	let accX = 2;
 
 	export let topLines = 2;
 	export let bottomLines = 2;
@@ -29,7 +30,8 @@
 		origin,
 		bottomPosition,
 		topPosition,
-		noteLine
+		noteLine,
+		accX
 	});
 </script>
 

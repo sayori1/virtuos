@@ -1,4 +1,4 @@
-import { solfege } from './const';
+import { DURATIONS, solfege } from './const';
 
 type NotationType = 'scientific' | 'solfege';
 
@@ -15,6 +15,7 @@ export class Note {
 	dies: boolean;
 
 	label: string;
+	symbolId: number;
 
 	constructor(duration: number, pitch: number) {
 		this.duration = duration;
@@ -26,6 +27,7 @@ export class Note {
 		this.label = note.label;
 		this.position = note.position;
 		this.dies = note.dies;
+		this.symbolId = findDurationIndex(this.duration)!;
 	}
 }
 
@@ -107,4 +109,27 @@ export function getPositionAndAccidental(pitch: number): { position: number; die
 	const position = white.slice(0, pitch).reduce((a, b) => a + b, 0);
 	const dies = dieses[pitch % 12] === 1;
 	return { position, dies };
+}
+
+export function findDurationIndex(value: number): number | undefined {
+	return DURATIONS.findIndex((duration) => duration === value);
+}
+
+export function createMeasures(notes: Note[], maxDuration: number): Measure[] {
+	const measures: Measure[] = [];
+	let currentMeasure = new Measure(maxDuration);
+	for (let i = 0; i < notes.length; i++) {
+		const note = notes[i];
+		if (currentMeasure.totalDuration + note.duration <= maxDuration) {
+			currentMeasure.add(note);
+		} else {
+			measures.push(currentMeasure);
+			currentMeasure = new Measure(maxDuration);
+			currentMeasure.add(note);
+		}
+	}
+	if (currentMeasure.notes.length > 0) {
+		measures.push(currentMeasure);
+	}
+	return measures;
 }

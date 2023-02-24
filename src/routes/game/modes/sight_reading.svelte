@@ -3,17 +3,22 @@
 	import { onMount } from 'svelte';
 	import { requestAccess, setMidiHandler, midi } from '../core/midi';
 	import Score from '../view/Score.svelte';
+	import { Note } from '../core/note';
+	import NoteComponent from '../view/Note.svelte';
 	import { NoteSequence } from '../core/sequence';
-	import Note from '../view/Note.svelte';
-	import { getNoteValue, getPositionAndAccidental, getScale } from '../core/note';
-	import { MAJOR } from '../core/const';
 
-	let notes = getScale(0, MAJOR);
+	let sequence = new NoteSequence(8, (i) => {
+		return new Note(1, 64);
+	});
 
 	onMount(async () => {
 		await requestAccess();
 		setMidiHandler($midi, (event) => {
-			console.log(event);
+			console.log(event.pitch, sequence.notes[0].pitch);
+			if (event.type == 'whole' && sequence.notes[0].pitch == event.pitch) {
+				sequence.pop();
+				sequence.notes = sequence.notes;
+			}
 		});
 	});
 </script>
@@ -26,8 +31,8 @@
 		backgroundColor={0xffffff}
 	>
 		<Score noteSpacing={50}>
-			{#each notes as note, i}
-				<Note id={0} x={4 + i} y={note.position} />
+			{#each sequence.notes as note, i}
+				<NoteComponent id={2} y={note.position} />
 			{/each}
 		</Score>
 	</Application>
