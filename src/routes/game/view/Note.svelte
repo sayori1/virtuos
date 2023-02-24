@@ -3,30 +3,33 @@
 	import { getContext } from 'svelte';
 	import { Graphics, Sprite, Text } from 'svelte-pixi';
 	import { MUSIC_SYMBOLS, type ScoreContext } from './symbols';
+	let score: ScoreContext = getContext('score');
 
-	export let id: number;
+	export let id: number = 0;
 
-	export let x = 0;
+	export let x = (score.accX += 1);
 	export let y = 0;
 
-	let score: ScoreContext = getContext('score');
-	let symbol = MUSIC_SYMBOLS[id];
+	export let offsetX = 0;
 
-	$: realX = x * score.noteSpacing; //display x position
-	$: realY = ((score.origin - y) * score.lineSpacing) / 2; //display y position
+	export let isActive = false;
+	export let activeCircleColor = 0x000000;
 
-	$: isIn5Lines = score.origin + y <= score.bottomPosition && score.origin + y >= score.topPosition; //is note is in 5 lines area
+	$: symbol = MUSIC_SYMBOLS[id];
+	$: realX = x * score.noteSpacing + offsetX;
+	$: realY = ((score.origin - y) * score.lineSpacing) / 2;
+
+	$: isIn5Lines = score.origin + y <= score.bottomPosition && score.origin + y >= score.topPosition;
 	$: isOut5Lines = !isIn5Lines;
 	$: onLine =
 		(score.bottomPosition % 2 == 0 && (score.origin + y) % 2 == 0) ||
 		(score.bottomPosition % 2 == 1 && (score.origin + y) % 2 == 1);
 
-	let scale = (score.lineSpacing / MUSIC_SYMBOLS[id].size.y) * symbol.scale;
-	let texture = Texture.from(symbol.path);
+	$: scale = (score.lineSpacing / MUSIC_SYMBOLS[id].size.y) * symbol.scale;
 </script>
 
 <Sprite
-	{texture}
+	texture={Texture.from(symbol.path)}
 	{scale}
 	x={realX + symbol.offset.x * score.noteSpacing}
 	y={realY + symbol.offset.y * score.lineSpacing}
@@ -43,8 +46,8 @@
 
 					graphics.lineStyle(1, 0x000000);
 					graphics.moveTo(center.x, center.y + ry);
-					graphics.lineTo(center.x + score.noteSpacing, center.y + ry);
-					graphics.lineTo(center.x - score.noteSpacing, center.y + ry);
+					graphics.lineTo(center.x + symbol.size.x * scale * 0.8, center.y + ry);
+					graphics.lineTo(center.x - symbol.size.x * scale * 0.8, center.y + ry);
 				};
 
 				let aY = score.origin - y;
@@ -63,5 +66,17 @@
 				}
 			}}
 		/>
+		{#if isActive}
+			<Graphics
+				scale={1 / scale}
+				draw={(graphics) => {
+					graphics.clear();
+					let center = { x: (symbol.size.x / 2) * scale, y: score.lineSpacing / 2 };
+					graphics.beginFill(activeCircleColor);
+					graphics.drawCircle(center.x, center.y + 70, 5);
+					graphics.endFill();
+				}}
+			/>
+		{/if}
 	{/if}
 </Sprite>
