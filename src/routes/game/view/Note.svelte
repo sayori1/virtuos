@@ -41,7 +41,7 @@
 			draw={(graphics) => {
 				graphics.clear();
 				let center = { x: (symbol.size.x / 2) * scale, y: score.lineSpacing / 2 };
-				let drawLine = (y) => {
+				let drawLine = (y = 0) => {
 					let ry = (y * score.lineSpacing) / 2 - symbol.offset.y * score.lineSpacing;
 
 					graphics.lineStyle(1, 0x000000);

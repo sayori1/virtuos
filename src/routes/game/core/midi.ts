@@ -86,7 +86,7 @@ class MidiEvent {
 export function setMidiHandler(midiAccess: MIDIAccess, handler: (event: MidiEvent) => void) {
 	let buffer: MidiEvent[] = [];
 	midiAccess.inputs.forEach((entry) => {
-		entry.onmidimessage = (event) => {
+		entry.onmidimessage = (event: any) => {
 			const [command, pitch, velocity] = event.data;
 
 			if (command === 144 && velocity > 0) {

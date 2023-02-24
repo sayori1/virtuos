@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { Graphics } from 'svelte-pixi';
-	import type { Measure } from '../core/note';
+	import type { Measure } from '../core/entities/measure';
 	import NoteComponent from './Note.svelte';
 	import VerticalLine from './VerticalLine.svelte';
 

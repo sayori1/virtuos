@@ -3,9 +3,9 @@
 	import { onMount } from 'svelte';
 	import { requestAccess, setMidiHandler, midi } from '../core/midi';
 	import Score from '../view/Score.svelte';
-	import { Note } from '../core/note';
 	import NoteComponent from '../view/Note.svelte';
-	import { NoteSequence } from '../core/sequence';
+	import { NoteSequence } from '../core/entities/sequence';
+	import { Note } from '../core/entities/note';
 
 	let sequence = new NoteSequence(8, (i) => {
 		return new Note(1, 64);

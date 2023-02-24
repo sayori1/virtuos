@@ -3,19 +3,14 @@
 	import { onMount } from 'svelte';
 	import { requestAccess, setMidiHandler, midi } from '../core/midi';
 	import Score from '../view/Score.svelte';
-	import {
-		createMeasures,
-		findDurationIndex,
-		generateDurations,
-		Measure,
-		Note
-	} from '../core/note';
+	import { createMeasures, findDurationIndex, generateDurations } from '../core/utils';
 	import { DURATIONS, MAJOR } from '../core/const';
 	import NoteComponent from '../view/Note.svelte';
-	import { NoteSequence } from '../core/sequence';
+	import { NoteSequence } from '../core/entities/sequence';
 	import { randomInRange } from '../core/utils';
 	import Metronom from '../view/Metronom.svelte';
 	import MeasureComponent from '../view/Measure.svelte';
+	import { Note } from '../core/entities/note';
 
 	let notes: Note[] = Array.from({ length: 10 }).map((i) => {
 		return new Note(
